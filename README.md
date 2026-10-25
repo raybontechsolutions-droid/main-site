@@ -31,12 +31,33 @@ Open **http://localhost:3000**.
 
 ## Production image
 
-`Dockerfile` builds a multi-stage standalone production image:
+`Dockerfile` builds the static export (`out/`) and serves it with nginx — the same output GitHub Pages serves:
 
 ```bash
 docker build -t raybon-main-site .
-docker run -p 3000:3000 raybon-main-site
+docker run -p 3000:80 raybon-main-site      # http://localhost:3000
 ```
+
+## Deploy to GitHub Pages
+
+The site is configured for **static export** (`output: "export"` in `next.config.ts`). Every push to `main` is built and published automatically by [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
+
+**One-time setup (requires repo admin):**
+
+1. Go to **Settings → Pages** in the GitHub repo
+2. Under **Build and deployment → Source**, select **GitHub Actions**
+3. Done — the next push to `main` (or a manual **Run workflow** trigger) publishes the site
+
+**Live URL:** `https://raybontechsolutions-droid.github.io/main-site/`
+
+> The workflow builds with `NEXT_PUBLIC_BASE_PATH=/main-site` so all asset URLs resolve under the project-site subpath. Local builds have no base path and run at the root — no configuration needed. To test the exact CI output locally:
+>
+> ```bash
+> npm run build                                  # or with the base path set, like CI
+> npx serve out
+> ```
+
+> **Note:** GitHub Pages serves static files only. When the contact form gets a backend later, it must talk to an external API (e.g., Supabase) directly from the browser, or the site should move to a host with Next.js server support (e.g., Vercel).
 
 ## Native development (without Docker)
 
