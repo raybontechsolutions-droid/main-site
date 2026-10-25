@@ -1,26 +1,131 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/* RaybonTech — "Verdant Tech Precision" design tokens (from DESIGN.md) */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Palette */
+  --color-background: #f5faef;
+  --color-surface: #f8fbf4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f0f6ec;
+  --color-surface-container: #e7f2db;
+  --color-surface-container-high: #e1ecd5;
+  --color-surface-container-highest: #dbe6d0;
+  --color-surface-variant: #dbe6d0;
+  --color-surface-dim: #d3dec8;
+  --color-on-surface: #151e10;
+  --color-on-surface-variant: #45483e;
+  --color-inverse-surface: #2a3324;
+  --color-inverse-on-surface: #e9f4de;
+  --color-outline: #75786d;
+  --color-outline-variant: #c5c8ba;
+  --color-primary: #516237;
+  --color-primary-container: #697b4d;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #faffe9;
+  --color-secondary: #54643b;
+  --color-secondary-container: #d4e7b3;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #58683e;
+  --color-tertiary: #50613b;
+  --color-tertiary-container: #687a52;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-fixed: #d5eab8;
+  --color-error: #ba1a1a;
+
+  /* Typography scale — Plus Jakarta Sans (display/body) + Space Grotesk (tech labels) */
+  --text-display-hero: 3.5rem;
+  --text-display-hero--line-height: 4rem;
+  --text-display-hero--letter-spacing: -0.03em;
+  --text-display-hero-sm: 2.375rem;
+  --text-display-hero-sm--line-height: 2.75rem;
+  --text-display-hero-sm--letter-spacing: -0.02em;
+  --text-headline-lg: 2.5rem;
+  --text-headline-lg--line-height: 3rem;
+  --text-headline-lg--letter-spacing: -0.025em;
+  --text-headline-md: 1.75rem;
+  --text-headline-md--line-height: 2.25rem;
+  --text-headline-md--letter-spacing: -0.02em;
+  --text-headline-sm: 1.25rem;
+  --text-headline-sm--line-height: 1.75rem;
+  --text-headline-sm--letter-spacing: -0.01em;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.75rem;
+  --text-body-lg--letter-spacing: -0.005em;
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.5rem;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-label-tech: 0.75rem;
+  --text-label-tech--line-height: 1rem;
+  --text-label-tech--letter-spacing: 0.06em;
+  --text-label-button: 0.875rem;
+  --text-label-button--line-height: 1.25rem;
+  --text-label-button--letter-spacing: 0.01em;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--letter-spacing: 0.01em;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-tech: var(--font-grotesk), ui-monospace, SFMono-Regular, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-background font-sans text-on-surface antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------------------------------------------------------ */
+/* Custom animation helpers (chat typewriter, bouncing dots, blinking) */
+/* ------------------------------------------------------------------ */
+.dot-bounce-1 {
+  animation: typing-pulse 0.8s infinite ease-in-out;
+}
+.dot-bounce-2 {
+  animation: typing-pulse 0.8s infinite ease-in-out 0.18s;
+}
+.dot-bounce-3 {
+  animation: typing-pulse 0.8s infinite ease-in-out 0.36s;
+}
+@keyframes typing-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: middle;
+  background-color: currentColor;
+  animation: blink 0.8s infinite;
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

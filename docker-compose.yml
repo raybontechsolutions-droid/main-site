@@ -1,0 +1,29 @@
+# Raybon Tech Solutions — main-site local testing environment
+#
+#   docker compose up --build      → dev server with hot reload on http://localhost:3000
+#   docker compose down            → stop the environment
+#   docker compose logs -f web     → follow server logs
+#
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: raybon-main-site-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Live source code binding for hot reload
+      - .:/app
+      # Keep dependencies and build cache inside named volumes (fast on Windows)
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+    environment:
+      # File-watching polling so edits propagate on Windows bind mounts
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped
+
+volumes:
+  node_modules:
+  next_cache:
