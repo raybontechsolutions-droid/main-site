@@ -1,5 +1,11 @@
 # ------------------------------------------------------------------
-# Production image — multi-stage build with Next.js standalone output
+# Production image — serves the static export (same output as GitHub Pages)
+#
+#   docker build -t raybon-main-site .
+#   docker run -p 3000:80 raybon-main-site      → http://localhost:3000
+#
+# Pass a base path if deploying under a subpath, e.g.:
+#   docker build --build-arg NEXT_PUBLIC_BASE_PATH=/main-site .
 # ------------------------------------------------------------------
 FROM node:22-alpine AS deps
 WORKDIR /app
@@ -10,19 +16,12 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ARG NEXT_PUBLIC_BASE_PATH=""
+ENV NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-FROM node:22-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-
-EXPOSE 3000
-CMD ["node", "server.js"]
+FROM nginx:alpine AS runner
+COPY --from=builder /app/out /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
